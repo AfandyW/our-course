@@ -213,3 +213,60 @@ module.exports.getCourse = async (event) => {
         };
     }
 };
+
+module.exports.updateCourse = async (event) => {
+    try {
+        const { Course } = await connectToDatabase();
+
+        const id = event.pathParameters.id;
+
+        // check course exists or not
+        const course = await Course.findOne({
+            where: { id: id, status: active },
+        });
+
+        if (!course)
+            throw new HTTPError(400, "bad request", "course not found");
+
+        const payload = JSON.parse(event.body);
+
+        // check payload
+        if (payload.name == null || payload.price == null)
+            throw new HTTPError(400, "bad request", "required name and price");
+
+        const oCourse = await Course.findOne({
+            where: { name: id, status: active },
+        });
+
+        if (oCourse)
+            throw new HTTPError(
+                400,
+                "bad request",
+                "course name already exists"
+            );
+
+        if (course.name) course.name = payload.name;
+        if (course.price) course.price = payload.price;
+
+        await Course.update(
+            { name: course.name, price: course.price },
+            { where: { id: id } }
+        );
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                message: "Success Update Course",
+                data: course,
+            }),
+        };
+    } catch (err) {
+        return {
+            statusCode: err.statusCode,
+            body: JSON.stringify({
+                message: err.message,
+                error: err.errorMessage,
+            }),
+        };
+    }
+};
