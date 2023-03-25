@@ -34,42 +34,61 @@ functions:
     handler: index.register
     events:
       - http:
-          path: user/register
+          path: users/register
           method: post
   userLogin:
     handler: index.login
     events:
       - http:
-          path: user/login
+          path: users/login
           method: post
   #manage course
   addCourse:
     handler: index.addCourse
     events:
       - http:
-          path: course
+          path: courses
           method: post
   listCourse:
     handler: index.listCourse
     events:
       - http:
-          path: course
+          path: courses
           method: get
   getCourse:
     handler: index.getCourse
     events:
       - http:
-          path: course/{id}
+          path: courses/{id}
           method: get
   updateCourse:
     handler: index.updateCourse
     events:
       - http:
-          path: course/{id}
+          path: courses/{id}
           method: put
   deleteCourse:
     handler: index.deleteCourse
     events:
       - http:
-          path: course/{id}
+          path: courses/{id}
           method: delete
+  # user course
+  userListCourse:
+    handler: index.userCourse
+    events:
+      - http:
+          path: users/courses
+          method: get
+  userGetCourse:
+    handler: index.userGetCourse
+    events:
+      - http:
+          path: users/courses/{id}
+          method: get
+  userEnrollCourse:
+    handler: index.userEnrollCourse
+    events:
+      - http:
+          path: users/courses/{id}
+          method: post
