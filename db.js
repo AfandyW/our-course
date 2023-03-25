@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const UserModel = require("./models/User");
 const CourseModel = require("./models/Course");
+const UserCourseModel = require("./models/UserCourse");
 const sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
@@ -13,7 +14,8 @@ const sequelize = new Sequelize(
 );
 const User = UserModel(sequelize, Sequelize);
 const Course = CourseModel(sequelize, Sequelize);
-const Models = { User, Course};
+const UserCourse = UserCourseModel(sequelize, Sequelize);
+const Models = { User, Course, UserCourse };
 const connection = {};
 
 module.exports = async () => {

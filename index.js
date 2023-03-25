@@ -305,3 +305,68 @@ module.exports.deleteCourse = async (event) => {
         };
     }
 };
+
+// User Course
+
+module.exports.userEnrollCourse = async (event) => {
+    try {
+        const { User, Course, UserCourse } = await connectToDatabase();
+
+        // get id course
+        const courseID = event.pathParameters.id;
+        const userID = event.headers.UserID;
+
+        if (userID == 0 || userID == null || userID == undefined)
+            throw new HTTPError(400, "bad request", "user id is nil");
+
+        // check course
+        const course = await Course.findOne({
+            where: { id: courseID, status: active },
+        });
+
+        if (!course)
+            throw new HTTPError(400, "bad request", "course is not found");
+
+        const user = await User.findOne({
+            where: { id: userID, status: active },
+        });
+
+        if (!user) throw new HTTPError(400, "bad request", "user is not found");
+
+        const userCourse = await UserCourse.findOne({
+            where: { user_id: userID, course_id: courseID },
+        });
+
+        if (userCourse)
+            throw new HTTPError(
+                400,
+                "bad request",
+                "this course already enroll"
+            );
+
+        // struct of course
+        const newCourse = {
+            name: course.name,
+            price: course.price,
+            course_id: course.id,
+            user_id: user.id,
+        };
+
+        const res = await UserCourse.create(newCourse);
+        return {
+            statusCode: 201,
+            body: JSON.stringify({
+                message: "Success Enroll New Course",
+                data: res,
+            }),
+        };
+    } catch (err) {
+        return {
+            statusCode: err.statusCode,
+            body: JSON.stringify({
+                message: err.message,
+                error: err.errorMessage,
+            }),
+        };
+    }
+};
