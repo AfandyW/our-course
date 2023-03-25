@@ -1,18 +1,56 @@
 service: our-course
 frameworkVersion: '3'
 
+custom:
+  secrets: ${file(secrets.json)}
+  bundle:
+    ignorePackages:
+      - pg-native
+
 plugins: 
-  - serverless-bundle
   - serverless-offline
 
 provider:
   name: aws
   runtime: nodejs18.x
+  environment: 
+    NODE_ENV: ${self:custom.secrets.NODE_ENV}
+    DB_NAME: ${self:custom.secrets.DB_NAME}
+    DB_USER: ${self:custom.secrets.DB_USER}
+    DB_PASSWORD: ${self:custom.secrets.DB_PASSWORD}
+    DB_HOST: ${self:custom.secrets.DB_HOST}
+    DB_PORT: ${self:custom.secrets.DB_PORT}
 
 functions:
-  hello:
-    handler: index.handler
+  healthCheck:
+    handler: index.healthCheck
     events:
       - http:
           path: test
+          method: get
+  # manage users
+  userRegister:
+    handler: index.register
+    events:
+      - http:
+          path: user/register
+          method: post
+  userLogin:
+    handler: index.login
+    events:
+      - http:
+          path: user/login
+          method: post
+  #manage course
+  addCourse:
+    handler: index.addCourse
+    events:
+      - http:
+          path: course
+          method: post
+  listCourse:
+    handler: index.listCourse
+    events:
+      - http:
+          path: course
           method: get
