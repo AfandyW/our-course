@@ -392,7 +392,7 @@ module.exports.userListCourse = async (event) => {
         });
 
         return {
-            statusCode: 201,
+            statusCode: 200,
             body: JSON.stringify({
                 message: "Success Get List Course Of User",
                 data: userCourse,
@@ -431,7 +431,7 @@ module.exports.userGetCourse = async (event) => {
         });
 
         return {
-            statusCode: 201,
+            statusCode: 200,
             body: JSON.stringify({
                 message: "Success Get Course Of User",
                 data: userCourse,
