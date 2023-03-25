@@ -67,3 +67,9 @@ functions:
       - http:
           path: course/{id}
           method: put
+  deleteCourse:
+    handler: index.deleteCourse
+    events:
+      - http:
+          path: course/{id}
+          method: delete

@@ -1,6 +1,7 @@
 const connectToDatabase = require("./db");
 
 const active = 1;
+const nonActive = 0;
 
 function HTTPError(statusCode, message, errorMessage) {
     const error = new Error(message);
@@ -258,6 +259,39 @@ module.exports.updateCourse = async (event) => {
             body: JSON.stringify({
                 message: "Success Update Course",
                 data: course,
+            }),
+        };
+    } catch (err) {
+        return {
+            statusCode: err.statusCode,
+            body: JSON.stringify({
+                message: err.message,
+                error: err.errorMessage,
+            }),
+        };
+    }
+};
+
+module.exports.deleteCourse = async (event) => {
+    try {
+        const { Course } = await connectToDatabase();
+
+        const id = event.pathParameters.id;
+
+        // check course exists or not
+        const course = await Course.findOne({
+            where: { id: id, status: active },
+        });
+
+        if (!course)
+            throw new HTTPError(400, "bad request", "course not found");
+
+        await Course.update({ status: nonActive }, { where: { id: id } });
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                message: "Success Delete Course",
             }),
         };
     } catch (err) {
