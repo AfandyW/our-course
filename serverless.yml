@@ -1,0 +1,18 @@
+service: our-course
+frameworkVersion: '3'
+
+plugins: 
+  - serverless-bundle
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  hello:
+    handler: index.handler
+    events:
+      - http:
+          path: test
+          method: get
