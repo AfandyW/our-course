@@ -286,6 +286,7 @@ module.exports.deleteCourse = async (event) => {
         if (!course)
             throw new HTTPError(400, "bad request", "course not found");
 
+        // just change status to nonActive. status = 0
         await Course.update({ status: nonActive }, { where: { id: id } });
 
         return {
