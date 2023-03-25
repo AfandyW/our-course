@@ -162,8 +162,8 @@ module.exports.addCourse = async (event) => {
 module.exports.listCourse = async (event) => {
     try {
         const { Course } = await connectToDatabase();
-        // get all course has status active. status == 1
 
+        // get all course has status active. status == 1
         const course = await Course.findAll({
             where: { status: active },
         });
@@ -172,6 +172,34 @@ module.exports.listCourse = async (event) => {
             statusCode: 200,
             body: JSON.stringify({
                 message: "Success Get List Course",
+                data: course,
+            }),
+        };
+    } catch (err) {
+        return {
+            statusCode: err.statusCode,
+            body: JSON.stringify({
+                message: err.message,
+                error: err.errorMessage,
+            }),
+        };
+    }
+};
+
+module.exports.getCourse = async (event) => {
+    try {
+        const { Course } = await connectToDatabase();
+
+        const id = event.pathParameters.id;
+        // get course by id
+        const course = await Course.findOne({
+            where: { id: id, status: active },
+        });
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                message: "Success Get Course",
                 data: course,
             }),
         };

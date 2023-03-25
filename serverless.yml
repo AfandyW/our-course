@@ -21,12 +21,13 @@ provider:
     DB_HOST: ${self:custom.secrets.DB_HOST}
     DB_PORT: ${self:custom.secrets.DB_PORT}
 
+# just for checkt db connection
 functions:
   healthCheck:
     handler: index.healthCheck
     events:
       - http:
-          path: test
+          path: /
           method: get
   # manage users
   userRegister:
@@ -53,4 +54,10 @@ functions:
     events:
       - http:
           path: course
+          method: get
+  getCourse:
+    handler: index.getCourse
+    events:
+      - http:
+          path: course/{id}
           method: get
