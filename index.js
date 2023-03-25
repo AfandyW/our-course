@@ -370,3 +370,80 @@ module.exports.userEnrollCourse = async (event) => {
         };
     }
 };
+
+module.exports.userListCourse = async (event) => {
+    try {
+        const { User, UserCourse } = await connectToDatabase();
+
+        // get id course
+        const userID = event.headers.UserID;
+
+        if (userID == 0 || userID == null || userID == undefined)
+            throw new HTTPError(400, "bad request", "user id is nil");
+
+        const user = await User.findOne({
+            where: { id: userID, status: active },
+        });
+
+        if (!user) throw new HTTPError(400, "bad request", "user is not found");
+
+        const userCourse = await UserCourse.findAll({
+            where: { user_id: userID },
+        });
+
+        return {
+            statusCode: 201,
+            body: JSON.stringify({
+                message: "Success Get List Course Of User",
+                data: userCourse,
+            }),
+        };
+    } catch (err) {
+        return {
+            statusCode: err.statusCode,
+            body: JSON.stringify({
+                message: err.message,
+                error: err.errorMessage,
+            }),
+        };
+    }
+};
+
+module.exports.userGetCourse = async (event) => {
+    try {
+        const { User, UserCourse } = await connectToDatabase();
+
+        // get id course
+        const userID = event.headers.UserID;
+        const id = event.pathParameters.id;
+
+        if (userID == 0 || userID == null || userID == undefined)
+            throw new HTTPError(400, "bad request", "user id is nil");
+
+        const user = await User.findOne({
+            where: { id: userID, status: active },
+        });
+
+        if (!user) throw new HTTPError(400, "bad request", "user is not found");
+
+        const userCourse = await UserCourse.findAll({
+            where: { user_id: userID, id: id },
+        });
+
+        return {
+            statusCode: 201,
+            body: JSON.stringify({
+                message: "Success Get Course Of User",
+                data: userCourse,
+            }),
+        };
+    } catch (err) {
+        return {
+            statusCode: err.statusCode,
+            body: JSON.stringify({
+                message: err.message,
+                error: err.errorMessage,
+            }),
+        };
+    }
+};

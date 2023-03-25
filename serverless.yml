@@ -75,7 +75,7 @@ functions:
           method: delete
   # user course
   userListCourse:
-    handler: index.userCourse
+    handler: index.userListCourse
     events:
       - http:
           path: users/courses
